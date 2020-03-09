@@ -11,6 +11,7 @@ class Config(object):
         raise EnvironmentError('AZURE_APP_ID is not set')
     if AZURE_APP_SECRET is None:
         raise EnvironmentError('AZURE_APP_SECRET is not set')
+    SECRET_KEY = AZURE_APP_SECRET
 
 
 class ProductionConfig(Config):

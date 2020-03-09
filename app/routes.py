@@ -1,7 +1,7 @@
 from flask import render_template, url_for, request, redirect, session
 
 from app import app
-from app.authhelper import get_signin_url
+from app.authhelper import get_signin_url, get_token_from_code
 
 def get_redirect_uri():
     '''
@@ -20,5 +20,6 @@ def login():
 def token():
     # receive the authorization code
     auth_code = request.args.get('code')
-    context = {'auth_code': auth_code}
+    get_token_from_code(auth_code, get_redirect_uri())
+    context = {'access_token': session['access_token']}
     return render_template('home.html', **context)

@@ -25,7 +25,18 @@ scopes = [
 ]
 
 def get_signin_url(redirect_uri):
-    # build the query parameters for the signin url
+    '''
+    Build the query parameters for the signin url
+
+    Parameters
+
+    redirect_uri : A redirect URI configured in your app registration
+
+    Returns
+
+    A link to an authorization endpoint including the client ID,
+    redirect URI and requested scopes
+    '''
     params = {
         'client_id': app.config['AZURE_APP_ID'],
         'redirect_uri': redirect_uri,
@@ -34,3 +45,32 @@ def get_signin_url(redirect_uri):
     }
     signin_url = authorize_url.format(urlencode(params))
     return signin_url
+
+def get_token_from_code(auth_code, redirect_uri):
+    '''
+    Exchange an authorization code for an access token
+
+    Parameters
+
+    auth_code : an authorization code received from Azure AD
+    redirect_uri : a redirect URI configured in your app registration
+
+    Returns:
+
+    True if an access token was obtained, False otherwise
+    '''
+    post_data = {
+        'grant_type': 'authorization_code',
+        'code': auth_code,
+        'redirect_uri': redirect_uri,
+        'scope': ' '.join(str(i) for i in scopes),
+        'client_id': app.config['AZURE_APP_ID'],
+        'client_secret': app.config['AZURE_APP_SECRET']
+    }
+    r = requests.post(token_url, data=post_data)
+    try:
+        token = r.json()
+        session['access_token'] = token['access_token']
+    except:
+        pass
+    return r.status_code == requests.codes['ok']
