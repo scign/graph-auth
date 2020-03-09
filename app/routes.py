@@ -2,6 +2,7 @@ from flask import render_template, url_for, request, redirect, session
 
 from app import app
 from app.authhelper import get_signin_url, get_token_from_code
+from app.graphapi import get_me
 
 def get_redirect_uri():
     '''
@@ -20,6 +21,13 @@ def login():
 def token():
     # receive the authorization code
     auth_code = request.args.get('code')
-    get_token_from_code(auth_code, get_redirect_uri())
-    context = {'access_token': session['access_token']}
+    if get_token_from_code(auth_code, get_redirect_uri()):
+        return redirect(url_for('profile'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/me')
+def profile():
+    user = get_me()
+    context = {'user': user}
     return render_template('home.html', **context)

@@ -1,8 +1,12 @@
 {% extends "main.html" %}
 {% block content %}
-<h1>Logging in</h1>
-<div class='card'>
-<p class='card-header'>Access token received</p>
-<p class='card-body'>{{ access_token }}</p>
+<h1>Logged in</h1>
+<div class='panel panel-default'>
+  <div class='panel-heading'>Logged in as</div>
+    <div class='panel-body'>
+      <p class=''>{{ user.displayName }}</p>
+      <p class=''>{{ user.jobTitle }}</p>
+    </div>
+  <div class='panel-footer text-muted'>{{ user.mail }}</div>
 </div>
 {% endblock %}
